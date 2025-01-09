@@ -3,6 +3,11 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#assignment files
+HW1/degrees/large
+HW1/degrees/small
+HW1/degrees/util.py
+*.csv
 # C extensions
 *.so
 
