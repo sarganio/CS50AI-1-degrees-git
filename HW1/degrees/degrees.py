@@ -84,18 +84,42 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
-def shortest_path(source, target):
+def shortest_path(source, target):#source - (movie_id, person_id), target - name
     """
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
 
     If no possible path, returns None.
     """
-    shortersPath = []
-
     # TODO
-    raise NotImplementedError
-
+    shortersPath = []
+    exploredSet = []
+    frontier = QueueFrontier()
+    #create the initial node as source
+    currentNode = Node([None, source], None, neighbors_for_person(source[1]))
+    while(True):
+        #if the frontier is empty then there's no solution
+        if frontier.empty():
+            return None
+        #remove a node from the fronteir
+        currentNode = frontier.remove()
+        #check if the target node was found
+        if(currentNode.state[1] == target[1]):
+            #if so generate the path from source to target
+            while(currentNode != None):
+                shortest_path.append(currentNode.state)
+                currentNode = currentNode.parent
+            shortersPath.reverse()
+        #add current node to the explored state
+        exploredSet.append(currentNode)
+        #add resulting nodes to the frontier if they aren't already in the frontier or in the explored set
+        frontierAndExploredSet = set(frontier+exploredSet)
+        for neighbor in currentNode.action:
+            for node in frontierAndExploredSet:
+                if(node.contains_state(neighbor) ):
+                    break
+                elif(node==frontierAndExploredSet[-1]):
+                    frontier.add(Node(neighbor,currentNode,neighbors_for_person(neighbor[1])))
 
 def person_id_for_name(name):
     """
