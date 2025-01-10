@@ -114,8 +114,8 @@ def shortest_path(source, target):#source - (movie_id, person_id), target - name
         #add current node to the explored state
         exploredSet.append(currentNode)
         #add resulting nodes to the frontier if they aren't already in the frontier or in the explored set
-        frontierList = [node.state for node in frontier]
-        frontierAndExploredSet = set(frontier+exploredSet)
+        frontierList = [node.state for node in frontier.frontier]
+        frontierAndExploredSet = set(frontierList+exploredSet)
         for neighbor in currentNode.action:
             for node in frontierAndExploredSet:
                 if(node.contains_state(neighbor) ):
