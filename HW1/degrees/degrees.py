@@ -84,7 +84,7 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
-def shortest_path(source, target):#source - (movie_id, person_id), target - name
+def shortest_path(source, target):#source - person_id, target - person_id
     """
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
@@ -93,7 +93,7 @@ def shortest_path(source, target):#source - (movie_id, person_id), target - name
     """
     # TODO
     shortersPath = []
-    exploredSet = []
+    exploredSet = QueueFrontier()
     frontier = QueueFrontier()
     #create the initial node as source
     currentNode = Node([None, source], None, neighbors_for_person(source))
@@ -105,24 +105,21 @@ def shortest_path(source, target):#source - (movie_id, person_id), target - name
         #remove a node from the fronteir
         currentNode = frontier.remove()
         #check if the target node was found
-        if(currentNode.state[1] == target[1]):
+        if(currentNode.state == target):
             #if so generate the path from source to target
             while(currentNode != None):
                 shortest_path.append(currentNode.state)
                 currentNode = currentNode.parent
             shortersPath.reverse()
         #add current node to the explored state
-        exploredSet.append(currentNode)
+        exploredSet.add(currentNode)
         #add resulting nodes to the frontier if they aren't already in the frontier or in the explored set
-        frontierList = [node.state for node in frontier.frontier]
-        frontierAndExploredSet = set(frontierList+exploredSet)
-        for neighbor in currentNode.action:
-            for node in frontierAndExploredSet:
-                if(node.contains_state(neighbor) ):
-                    break
-                elif(node==frontierAndExploredSet[-1]):
-                    frontier.add(Node(neighbor,currentNode,neighbors_for_person(neighbor[1])))
+        for neighbor in neighbors_for_person(currentNode.state[1]):
+            if(not frontier.contains_state(neighbor) and not exploredSet.contains_state(neighbor)):
+                frontier.add(Node(neighbor,currentNode,neighbors_for_person(neighbor[1])))
 
+        
+                    
 def person_id_for_name(name):
     """
     Returns the IMDB id for a person's name,
