@@ -96,7 +96,8 @@ def shortest_path(source, target):#source - (movie_id, person_id), target - name
     exploredSet = []
     frontier = QueueFrontier()
     #create the initial node as source
-    currentNode = Node([None, source], None, neighbors_for_person(source[1]))
+    currentNode = Node([None, source], None, neighbors_for_person(source))
+    frontier.add(currentNode)
     while(True):
         #if the frontier is empty then there's no solution
         if frontier.empty():
@@ -113,6 +114,7 @@ def shortest_path(source, target):#source - (movie_id, person_id), target - name
         #add current node to the explored state
         exploredSet.append(currentNode)
         #add resulting nodes to the frontier if they aren't already in the frontier or in the explored set
+        frontierList = [node.state for node in frontier]
         frontierAndExploredSet = set(frontier+exploredSet)
         for neighbor in currentNode.action:
             for node in frontierAndExploredSet:
