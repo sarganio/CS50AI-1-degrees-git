@@ -84,7 +84,7 @@ def main():
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 
-def shortest_path(source, target):#source - person_id, target - person_id
+def shortest_path(source, target):  # source - person_id, target - person_id
     """
     Returns the shortest list of (movie_id, person_id) pairs
     that connect the source to the target.
@@ -95,31 +95,41 @@ def shortest_path(source, target):#source - person_id, target - person_id
     shortersPath = []
     exploredSet = QueueFrontier()
     frontier = QueueFrontier()
-    #create the initial node as source
+    # create the initial node as source
     currentNode = Node([None, source], None, neighbors_for_person(source))
     frontier.add(currentNode)
     while(True):
-        #if the frontier is empty then there's no solution
+        # if the frontier is empty then there's no solution
         if frontier.empty():
             return None
-        #remove a node from the fronteir
+        # remove a node from the fronteir
         currentNode = frontier.remove()
-        #check if the target node was found
-        if(currentNode.state == target):
-            #if so generate the path from source to target
-            while(currentNode != None):
-                shortest_path.append(currentNode.state)
-                currentNode = currentNode.parent
-            shortersPath.reverse()
-        #add current node to the explored state
+        # check if the target node was found
+        if(currentNode.state[1] == target):
+            # if so generate the path from source to target
+            return generate_path_to_target(shortersPath, currentNode,source)
+        # add current node to the explored state
         exploredSet.add(currentNode)
-        #add resulting nodes to the frontier if they aren't already in the frontier or in the explored set
+        # add resulting nodes to the frontier if they aren't already in the frontier or in the explored set
         for neighbor in neighbors_for_person(currentNode.state[1]):
-            if(not frontier.contains_state(neighbor) and not exploredSet.contains_state(neighbor)):
-                frontier.add(Node(neighbor,currentNode,neighbors_for_person(neighbor[1])))
+            if (not frontier.contains_state(neighbor) and not exploredSet.contains_state(neighbor)):
+                neighbornodeToAdd = Node(neighbor,currentNode,neighbors_for_person(neighbor[1]))
+                frontier.add(neighbornodeToAdd)
+                # check if the neighbor is the target node
+                if (neighbor[1]==target):
+                    currentNode = neighbornodeToAdd
+                    return generate_path_to_target(shortersPath, currentNode, source)
+                
 
+def generate_path_to_target(shortersPath, currentNode, source):
+
+    while (currentNode.state[1] != source):
+        shortersPath.append(currentNode.state)
+        currentNode = currentNode.parent
+
+    shortersPath.reverse()
+    return shortersPath
         
-                    
 def person_id_for_name(name):
     """
     Returns the IMDB id for a person's name,
@@ -154,8 +164,11 @@ def neighbors_for_person(person_id):
     movie_ids = people[person_id]["movies"]
     neighbors = set()
     for movie_id in movie_ids:
-        for person_id in movies[movie_id]["stars"]:
-            neighbors.add((movie_id, person_id))
+        for neighbor_id in movies[movie_id]["stars"]:
+            #skip if the neighbor found is the input person - don't return the person in it's neighbors list
+            if(neighbor_id==person_id):
+                continue
+            neighbors.add((movie_id, neighbor_id))
     return neighbors
 
 
