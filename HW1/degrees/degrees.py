@@ -98,25 +98,25 @@ def shortest_path(source, target):  # source - person_id, target - person_id
     # create the initial node as source
     currentNode = Node([None, source], None, neighbors_for_person(source))
     frontier.add(currentNode)
-    while(True):
+    while (True):
         # if the frontier is empty then there's no solution
         if frontier.empty():
             return None
         # remove a node from the fronteir
         currentNode = frontier.remove()
         # check if the target node was found
-        if(currentNode.state[1] == target):
+        if (currentNode.state[1] == target):
             # if so generate the path from source to target
-            return generate_path_to_target(shortersPath, currentNode,source)
+            return generate_path_to_target(shortersPath, currentNode, source)
         # add current node to the explored state
         exploredSet.add(currentNode)
         # add resulting nodes to the frontier if they aren't already in the frontier or in the explored set
         for neighbor in neighbors_for_person(currentNode.state[1]):
             if (not frontier.contains_state(neighbor) and not exploredSet.contains_state(neighbor)):
-                neighbornodeToAdd = Node(neighbor,currentNode,neighbors_for_person(neighbor[1]))
+                neighbornodeToAdd = Node(neighbor, currentNode, neighbors_for_person(neighbor[1]))
                 frontier.add(neighbornodeToAdd)
                 # check if the neighbor is the target node
-                if (neighbor[1]==target):
+                if (neighbor[1] == target):
                     currentNode = neighbornodeToAdd
                     return generate_path_to_target(shortersPath, currentNode, source)
                 
@@ -129,6 +129,7 @@ def generate_path_to_target(shortersPath, currentNode, source):
 
     shortersPath.reverse()
     return shortersPath
+
         
 def person_id_for_name(name):
     """
@@ -165,8 +166,8 @@ def neighbors_for_person(person_id):
     neighbors = set()
     for movie_id in movie_ids:
         for neighbor_id in movies[movie_id]["stars"]:
-            #skip if the neighbor found is the input person - don't return the person in it's neighbors list
-            if(neighbor_id==person_id):
+            # skip if the neighbor found is the input person - don't return the person in it's neighbors list
+            if (neighbor_id == person_id):
                 continue
             neighbors.add((movie_id, neighbor_id))
     return neighbors
